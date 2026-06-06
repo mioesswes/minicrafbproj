@@ -5,6 +5,9 @@ const logsTable = document.getElementById("logsTable");
 const marksFile = document.getElementById("marksFile");
 const uploadMarksButton = document.getElementById("uploadMarksButton");
 const uploadStatus = document.getElementById("uploadStatus");
+const hiddenSearchList = document.getElementById("hiddenSearchList");
+const saveHiddenListButton = document.getElementById("saveHiddenListButton");
+const hiddenListStatus = document.getElementById("hiddenListStatus");
 
 initAdmin();
 
@@ -12,11 +15,13 @@ async function initAdmin() {
   await loadOverview();
   captchaToggle.addEventListener("change", saveSettings);
   uploadMarksButton.addEventListener("click", uploadMarks);
+  saveHiddenListButton.addEventListener("click", saveHiddenSettings);
 }
 
 async function loadOverview() {
   const data = await fetchJson("/api/admin/overview");
   captchaToggle.checked = data.settings.captchaEnabled;
+  hiddenSearchList.value = data.settings.hiddenSearchList || "";
   adminStats.innerHTML = `
     <span>Всего кланов: ${data.stats.totalClans}</span>
     <span>Всего территорий: ${data.stats.totalTerritories}</span>
@@ -29,8 +34,18 @@ async function loadOverview() {
 async function saveSettings() {
   await fetchJson("/api/admin/settings", {
     method: "POST",
-    body: JSON.stringify({ captchaEnabled: captchaToggle.checked }),
+    body: JSON.stringify({
+      captchaEnabled: captchaToggle.checked,
+      hiddenSearchList: hiddenSearchList.value,
+    }),
   });
+}
+
+async function saveHiddenSettings() {
+  hiddenListStatus.textContent = "Сохраняю список...";
+  await saveSettings();
+  hiddenListStatus.textContent = "Список исключений сохранён.";
+  await loadOverview();
 }
 
 async function uploadMarks() {

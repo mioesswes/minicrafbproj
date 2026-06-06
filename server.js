@@ -28,6 +28,12 @@ let marksCache = {
   },
 };
 
+let settingsCache = {
+  captchaEnabled: true,
+  hiddenSearchList: "",
+  hiddenRules: [],
+};
+
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: false }));
 
@@ -47,12 +53,11 @@ app.get("/adminkqa", requireBasicAuth, (_req, res) => {
   res.sendFile(path.join(ROOT, "public", "admin.html"));
 });
 
-app.get("/api/bootstrap", async (_req, res, next) => {
+app.get("/api/bootstrap", (_req, res, next) => {
   try {
-    const settings = await getSettingsObject();
     res.json({
-      stats: marksCache.parsed.stats,
-      captchaEnabled: settings.captcha_enabled !== "0",
+      stats: getVisibleStats(),
+      captchaEnabled: settingsCache.captchaEnabled,
       telegramUrl: TELEGRAM_URL,
       worldBounds: { minX: -30000, maxX: 30000, minZ: -30000, maxZ: 30000 },
     });
@@ -125,13 +130,15 @@ app.get("/api/admin/overview", requireBasicAuth, async (_req, res, next) => {
       getRecentLogs(100),
       getUsers(100),
     ]);
+    hydrateSettingsCache(settings);
 
     res.json({
       settings: {
-        captchaEnabled: settings.captcha_enabled !== "0",
+        captchaEnabled: settingsCache.captchaEnabled,
         marksUpdatedAt: settings.marks_updated_at || null,
+        hiddenSearchList: settingsCache.hiddenSearchList,
       },
-      stats: marksCache.parsed.stats,
+      stats: getVisibleStats(),
       logs,
       users,
     });
@@ -143,7 +150,13 @@ app.get("/api/admin/overview", requireBasicAuth, async (_req, res, next) => {
 app.post("/api/admin/settings", requireBasicAuth, async (req, res, next) => {
   try {
     const captchaEnabled = req.body.captchaEnabled ? "1" : "0";
+    const hiddenSearchList = String(req.body.hiddenSearchList || "");
     await setSetting("captcha_enabled", captchaEnabled);
+    await setSetting("hidden_search_list", hiddenSearchList);
+    hydrateSettingsCache({
+      captcha_enabled: captchaEnabled,
+      hidden_search_list: hiddenSearchList,
+    });
     res.json({ ok: true });
   } catch (error) {
     next(error);
@@ -175,7 +188,7 @@ app.post("/api/admin/upload-marks", requireBasicAuth, async (req, res, next) => 
 
     res.json({
       ok: true,
-      stats: parsed.stats,
+      stats: getVisibleStats(),
       updatedAt: timestamp,
     });
   } catch (error) {
@@ -208,17 +221,55 @@ async function bootstrap() {
   const settings = await getSettingsObject();
   const raw = settings.marks_json || fileMarks;
   marksCache = { raw, parsed: parseMarks(raw) };
+  hydrateSettingsCache(settings);
 }
 
 function filterClans(query, leader) {
   const q = normalize(query);
   const l = normalize(leader);
 
-  return marksCache.parsed.clans.filter((clan) => {
+  return getVisibleClans().filter((clan) => {
     const matchesQuery = !q || clan.searchIndex.includes(q);
     const matchesLeader = !l || normalize(clan.leader).includes(l);
     return matchesQuery && matchesLeader;
   });
+}
+
+function getVisibleClans() {
+  if (!settingsCache.hiddenRules.length) {
+    return marksCache.parsed.clans;
+  }
+
+  return marksCache.parsed.clans.filter((clan) => {
+    const haystack = normalize(
+      [clan.id, clan.name, clan.tag, clan.leader, clan.searchIndex].join(" ")
+    );
+    return !settingsCache.hiddenRules.some((rule) => haystack.includes(rule));
+  });
+}
+
+function getVisibleStats() {
+  const clans = getVisibleClans();
+  return {
+    totalClans: clans.length,
+    totalTerritories: clans.reduce(
+      (sum, clan) => sum + clan.territoriesCount,
+      0
+    ),
+    updatedAt: marksCache.parsed.stats.updatedAt,
+  };
+}
+
+function hydrateSettingsCache(settings) {
+  const hiddenSearchList = String(settings.hidden_search_list || "");
+  settingsCache = {
+    captchaEnabled: String(settings.captcha_enabled || "1") !== "0",
+    hiddenSearchList,
+    hiddenRules: hiddenSearchList
+      .split(/\r?\n/)
+      .map((item) => normalize(item))
+      .filter(Boolean),
+  };
 }
 
 function normalize(value) {

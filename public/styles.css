@@ -33,6 +33,7 @@ body {
   font-family: var(--font-ui);
   color: var(--text);
   background: var(--bg);
+  font-weight: 600;
 }
 
 body {
@@ -48,7 +49,7 @@ body::before {
     radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.88), transparent 24%),
     radial-gradient(circle at 85% 15%, rgba(160, 218, 255, 0.48), transparent 20%),
     radial-gradient(circle at 75% 60%, rgba(255, 255, 255, 0.46), transparent 22%),
-    linear-gradient(180deg, rgba(240, 248, 255, 0.18), rgba(228, 239, 251, 0.56));
+    linear-gradient(180deg, rgba(240, 248, 255, 0.08), rgba(228, 239, 251, 0.24));
   pointer-events: none;
 }
 
@@ -67,7 +68,7 @@ body::before {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.14)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04)),
     radial-gradient(circle at 15% 22%, rgba(255, 255, 255, 0.7), transparent 22%),
     radial-gradient(circle at 80% 18%, rgba(155, 211, 255, 0.28), transparent 26%);
   backdrop-filter: blur(10px);
@@ -117,7 +118,7 @@ body::before {
   position: relative;
   overflow: hidden;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.3)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.62)),
     linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(188, 225, 255, 0.08));
   border: 1px solid var(--stroke);
   box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.84);
@@ -135,6 +136,7 @@ body::before {
     linear-gradient(140deg, rgba(255, 255, 255, 0.56), rgba(255, 255, 255, 0.08) 36%, rgba(255, 255, 255, 0.24) 70%, rgba(170, 223, 255, 0.14)),
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.66), transparent 34%);
   pointer-events: none;
+  opacity: 0.52;
 }
 
 .glass-hero {
@@ -338,7 +340,7 @@ body::before {
 .admin-help,
 .map-status,
 .modal-copy {
-  color: var(--text-soft);
+  color: #29486d;
   font-size: 0.92rem;
   font-weight: 700;
 }
@@ -372,6 +374,17 @@ body::before {
   display: grid;
   gap: 16px;
   margin-top: 18px;
+  overflow: auto;
+  padding-right: 6px;
+  scrollbar-width: thin;
+}
+
+.results {
+  max-height: min(56vh, 720px);
+}
+
+.map-results {
+  max-height: calc(100vh - 320px);
 }
 
 .result-card {
@@ -385,7 +398,7 @@ body::before {
 .clan-label,
 .coords {
   margin: 0;
-  color: var(--text-soft);
+  color: #29486d;
   font-weight: 700;
 }
 
@@ -403,7 +416,7 @@ body::before {
 
 .clan-leader {
   margin: 0;
-  color: var(--text-soft);
+  color: #29486d;
   font-weight: 700;
 }
 
@@ -494,6 +507,7 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  max-height: calc(100vh - 28px);
 }
 
 .sidebar-logo-link {
@@ -584,7 +598,7 @@ body::before {
 
 .map-result p {
   margin: 0 0 6px;
-  color: var(--text-soft);
+  color: #28486d;
   font-weight: 700;
 }
 
@@ -652,6 +666,21 @@ body::before {
   text-align: center;
   color: var(--text-soft);
   background: rgba(255, 255, 255, 0.36);
+}
+
+.admin-textarea {
+  min-height: 180px;
+  resize: vertical;
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(228, 241, 255, 0.38));
+  color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  font: inherit;
+  font-weight: 600;
 }
 
 @keyframes pulseButton {

@@ -31,7 +31,7 @@ function bindEvents() {
     queryInput.value = "";
     leaderInput.value = "";
     results.innerHTML = "";
-    resultCount.textContent = "Начните вводить запрос, и результаты появятся сразу.";
+    resultCount.textContent = "Начните вводить запрос.";
   });
   captchaButton.addEventListener("click", completeCaptcha);
 }
@@ -56,18 +56,26 @@ async function runSearch() {
 
   if (!query && !leader) {
     results.innerHTML = "";
-    resultCount.textContent = "Начните вводить запрос, и результаты появятся сразу.";
+    resultCount.textContent = "Начните вводить запрос.";
     return;
   }
 
-  resultCount.textContent = "Поиск...";
-  const params = new URLSearchParams();
-  if (query) params.set("query", query);
-  if (leader) params.set("leader", leader);
+  try {
+    resultCount.textContent = "Поиск...";
+    const params = new URLSearchParams();
+    if (query) params.set("query", query);
+    if (leader) params.set("leader", leader);
 
-  const data = await fetchJson(`/api/clans?${params.toString()}`);
-  resultCount.textContent = `Найдено кланов: ${data.count}`;
-  renderResults(data.results, params);
+    const data = await fetchJson(`/api/clans?${params.toString()}`);
+    resultCount.textContent =
+      data.count > 20
+        ? `Найдено кланов: ${data.count} · показаны первые 20`
+        : `Найдено кланов: ${data.count}`;
+    renderResults(data.results, params);
+  } catch (_error) {
+    results.innerHTML = `<div class="empty-state">Поиск временно недоступен. Проверьте сервер.</div>`;
+    resultCount.textContent = "Ошибка поиска.";
+  }
 }
 
 function renderStats(stats) {
@@ -85,7 +93,7 @@ function renderResults(clans, params) {
   }
 
   results.innerHTML = "";
-  clans.forEach((clan) => {
+  clans.slice(0, 20).forEach((clan) => {
     const fragment = cardTemplate.content.cloneNode(true);
     fragment.querySelector(".clan-name").textContent = clan.name;
     fragment.querySelector(".clan-leader").textContent = `Глава: ${clan.leader || "Не указан"}`;
