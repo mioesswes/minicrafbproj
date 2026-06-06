@@ -76,9 +76,7 @@ async function searchAndRender() {
   const data = await fetchJson(`/api/map-data?${params.toString()}`);
   mapStatsPill.textContent = `Кланов: ${data.count}`;
   mapStatus.textContent = data.count
-    ? data.count > 24
-      ? `Найдено кланов: ${data.count} · показаны первые 24`
-      : `Найдено кланов: ${data.count}`
+    ? `Найдено кланов: ${data.count}`
     : "По этому запросу ничего не найдено.";
 
   clearMapFeatures();
@@ -143,7 +141,7 @@ function renderResults(clans) {
   }
 
   mapResults.innerHTML = "";
-  clans.slice(0, 24).forEach((clan) => {
+  clans.forEach((clan) => {
     const item = document.createElement("button");
     item.type = "button";
     item.className = "map-result";

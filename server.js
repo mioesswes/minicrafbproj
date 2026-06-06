@@ -20,6 +20,8 @@ const PORT = Number(process.env.PORT || 3000);
 const TELEGRAM_URL = process.env.TELEGRAM_URL || "https://t.me/";
 const ROOT = __dirname;
 
+app.disable("x-powered-by");
+
 let marksCache = {
   raw: "",
   parsed: {
@@ -36,10 +38,26 @@ let settingsCache = {
 
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: false }));
+app.use((_req, res, next) => {
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://unpkg.com; script-src 'self' https://unpkg.com; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+  );
+  next();
+});
 
 app.use("/public", express.static(path.join(ROOT, "public")));
 app.use("/fonts", express.static(path.join(ROOT, "fonts")));
-app.use("/assets", express.static(ROOT));
+app.get("/assets/llgo.webp", (_req, res) => {
+  res.sendFile(path.join(ROOT, "llgo.webp"));
+});
+app.get("/assets/bgg.jpg", (_req, res) => {
+  res.sendFile(path.join(ROOT, "bgg.jpg"));
+});
 
 app.get("/", (_req, res) => {
   res.sendFile(path.join(ROOT, "public", "index.html"));

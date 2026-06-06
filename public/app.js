@@ -67,10 +67,7 @@ async function runSearch() {
     if (leader) params.set("leader", leader);
 
     const data = await fetchJson(`/api/clans?${params.toString()}`);
-    resultCount.textContent =
-      data.count > 20
-        ? `Найдено кланов: ${data.count} · показаны первые 20`
-        : `Найдено кланов: ${data.count}`;
+    resultCount.textContent = `Найдено кланов: ${data.count}`;
     renderResults(data.results, params);
   } catch (_error) {
     results.innerHTML = `<div class="empty-state">Поиск временно недоступен. Проверьте сервер.</div>`;
@@ -93,7 +90,7 @@ function renderResults(clans, params) {
   }
 
   results.innerHTML = "";
-  clans.slice(0, 20).forEach((clan) => {
+  clans.forEach((clan) => {
     const fragment = cardTemplate.content.cloneNode(true);
     fragment.querySelector(".clan-name").textContent = clan.name;
     fragment.querySelector(".clan-leader").textContent = `Глава: ${clan.leader || "Не указан"}`;

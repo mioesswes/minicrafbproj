@@ -195,6 +195,10 @@ body::before {
   margin: 12px 0 18px;
 }
 
+.sidebar-actions {
+  margin-top: 8px;
+}
+
 .liquid-button,
 .glass-mini,
 .text-link {
@@ -590,6 +594,15 @@ body::before {
   cursor: pointer;
   color: var(--text);
   text-align: left;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.map-result:hover,
+.map-result:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 34px rgba(90, 136, 188, 0.14);
+  border-color: rgba(255, 255, 255, 0.82);
+  outline: none;
 }
 
 .map-result h3 {

@@ -32,7 +32,7 @@ async function loadOverview() {
 }
 
 async function saveSettings() {
-  await fetchJson("/api/admin/settings", {
+  return fetchJson("/api/admin/settings", {
     method: "POST",
     body: JSON.stringify({
       captchaEnabled: captchaToggle.checked,
@@ -42,10 +42,14 @@ async function saveSettings() {
 }
 
 async function saveHiddenSettings() {
-  hiddenListStatus.textContent = "Сохраняю список...";
-  await saveSettings();
-  hiddenListStatus.textContent = "Список исключений сохранён.";
-  await loadOverview();
+  try {
+    hiddenListStatus.textContent = "Сохраняю список...";
+    await saveSettings();
+    await loadOverview();
+    hiddenListStatus.textContent = "Список исключений сохранён.";
+  } catch (_error) {
+    hiddenListStatus.textContent = "Не удалось сохранить список. Проверьте сервер.";
+  }
 }
 
 async function uploadMarks() {
@@ -121,7 +125,12 @@ async function fetchJson(url, options) {
     ...options,
   });
   if (!response.ok) {
-    throw new Error(await response.text());
+    let message = await response.text();
+    try {
+      const parsed = JSON.parse(message);
+      message = parsed.error || parsed.details || message;
+    } catch (_error) {}
+    throw new Error(message);
   }
   return response.json();
 }
