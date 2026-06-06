@@ -6,7 +6,6 @@ const leaderInput = document.getElementById("leaderInput");
 const clearSearch = document.getElementById("clearSearch");
 const telegramButton = document.getElementById("telegramButton");
 const mapButton = document.getElementById("mapButton");
-const openMapLink = document.getElementById("openMapLink");
 const captchaModal = document.getElementById("captchaModal");
 const captchaButton = document.getElementById("captchaButton");
 const cardTemplate = document.getElementById("cardTemplate");
@@ -20,29 +19,21 @@ async function init() {
   renderStats(bootstrapData.stats);
   setupCaptcha();
   telegramButton.href = bootstrapData.telegramUrl;
-  updateMapLinks();
+  mapButton.href = "/map";
   bindEvents();
 }
 
 function bindEvents() {
-  const debouncedSearch = debounce(runSearch, 240);
-  queryInput.addEventListener("input", () => {
-    updateMapLinks();
-    debouncedSearch();
-  });
-  leaderInput.addEventListener("input", () => {
-    updateMapLinks();
-    debouncedSearch();
-  });
+  const debouncedSearch = debounce(runSearch, 220);
+  queryInput.addEventListener("input", debouncedSearch);
+  leaderInput.addEventListener("input", debouncedSearch);
   clearSearch.addEventListener("click", () => {
     queryInput.value = "";
     leaderInput.value = "";
     results.innerHTML = "";
-    resultCount.textContent = "Пока пусто. Начните вводить запрос.";
-    updateMapLinks();
+    resultCount.textContent = "Начните вводить запрос, и результаты появятся сразу.";
   });
   captchaButton.addEventListener("click", completeCaptcha);
-  mapButton.addEventListener("click", updateMapLinks);
 }
 
 function setupCaptcha() {
@@ -65,7 +56,7 @@ async function runSearch() {
 
   if (!query && !leader) {
     results.innerHTML = "";
-    resultCount.textContent = "Пока пусто. Начните вводить запрос.";
+    resultCount.textContent = "Начните вводить запрос, и результаты появятся сразу.";
     return;
   }
 
@@ -119,15 +110,6 @@ function renderResults(clans, params) {
 
     results.appendChild(fragment);
   });
-}
-
-function updateMapLinks() {
-  const params = new URLSearchParams();
-  if (queryInput.value.trim()) params.set("query", queryInput.value.trim());
-  if (leaderInput.value.trim()) params.set("leader", leaderInput.value.trim());
-  const href = params.toString() ? `/map?${params.toString()}` : "/map";
-  mapButton.href = href;
-  openMapLink.href = href;
 }
 
 function formatUpdated(value) {

@@ -17,8 +17,9 @@
     <div class="map-layout">
       <aside class="map-sidebar glass-panel">
         <div class="sidebar-top">
-          <a class="glass-mini back-link" href="/">НА ГЛАВНУЮ</a>
-          <img class="sidebar-logo" src="/assets/llgo.webp" alt="ГОЙКАРТА" />
+          <a class="sidebar-logo-link" href="/" aria-label="На главную">
+            <img class="sidebar-logo" src="/assets/llgo.webp" alt="ГОЙКАРТА" />
+          </a>
         </div>
 
         <div class="sidebar-search">
@@ -31,7 +32,6 @@
             <input id="mapLeaderInput" type="text" placeholder="Например, Styopo4ka" />
           </label>
           <div class="sidebar-actions">
-            <button class="liquid-button" id="mapSearchButton" type="button"><span>ПОИСК</span></button>
             <button class="glass-mini" id="fitWorldButton" type="button">ПОКАЗАТЬ МИР</button>
           </div>
         </div>
@@ -43,7 +43,6 @@
       <section class="map-stage glass-panel">
         <div class="map-toolbar">
           <div class="map-toolbar-left">
-            <span class="map-pill">Мир: X/Z от -30000 до 30000</span>
             <span class="map-pill" id="mapStatsPill">Кланов: ...</span>
           </div>
           <button class="glass-mini" id="fullscreenButton" type="button">FULLSCREEN</button>

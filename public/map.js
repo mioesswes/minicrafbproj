@@ -1,6 +1,5 @@
 const queryInput = document.getElementById("mapQueryInput");
 const leaderInput = document.getElementById("mapLeaderInput");
-const searchButton = document.getElementById("mapSearchButton");
 const fitWorldButton = document.getElementById("fitWorldButton");
 const fullscreenButton = document.getElementById("fullscreenButton");
 const mapStatus = document.getElementById("mapStatus");
@@ -12,7 +11,8 @@ const captchaButton = document.getElementById("mapCaptchaButton");
 let map;
 let featureLayers = [];
 let bootstrapData;
-let currentResults = [];
+
+const WORLD_SCALE = 24;
 
 initMapPage();
 
@@ -23,35 +23,47 @@ async function initMapPage() {
   applyQueryParams();
   await searchAndRender();
 
-  searchButton.addEventListener("click", searchAndRender);
+  const debouncedSearch = debounce(searchAndRender, 220);
+  queryInput.addEventListener("input", debouncedSearch);
+  leaderInput.addEventListener("input", debouncedSearch);
   fitWorldButton.addEventListener("click", fitWorld);
   fullscreenButton.addEventListener("click", toggleFullscreen);
   captchaButton.addEventListener("click", completeCaptcha);
+  window.addEventListener("resize", () => map.invalidateSize());
+  document.addEventListener("fullscreenchange", () => {
+    setTimeout(() => map.invalidateSize(), 150);
+  });
 }
 
 function createMap() {
   map = L.map("map", {
+    preferCanvas: true,
     crs: L.CRS.Simple,
     zoomControl: true,
     attributionControl: false,
     minZoom: -2,
-    maxZoom: 4,
+    maxZoom: 6,
+    renderer: L.canvas(),
   });
 
   const bounds = worldToLeafletBounds(bootstrapData.worldBounds);
   L.rectangle(bounds, {
-    color: "rgba(72, 119, 179, 0.32)",
-    weight: 1.2,
-    fill: false,
-    dashArray: "6 8",
+    color: "#88acd5",
+    weight: 1.6,
+    fill: true,
+    fillColor: "#eef5fb",
+    fillOpacity: 0.86,
+    dashArray: "8 10",
   }).addTo(map);
 
+  map.setMaxBounds(bounds);
+  map.invalidateSize();
   fitWorld();
 }
 
 function fitWorld() {
   map.fitBounds(worldToLeafletBounds(bootstrapData.worldBounds), {
-    padding: [30, 30],
+    padding: [36, 36],
   });
 }
 
@@ -62,7 +74,6 @@ async function searchAndRender() {
 
   mapStatus.textContent = "Загрузка территорий...";
   const data = await fetchJson(`/api/map-data?${params.toString()}`);
-  currentResults = data.results;
   mapStatsPill.textContent = `Кланов: ${data.count}`;
   mapStatus.textContent = data.count
     ? `Найдено кланов: ${data.count}`
@@ -76,15 +87,17 @@ async function searchAndRender() {
 }
 
 function drawFeatures(clans) {
+  const drawnBounds = [];
+
   clans.forEach((clan) => {
     clan.territories.forEach((territory) => {
       const polygon = L.polygon(
-        territory.points.map((ring) => ring.map((point) => [point.z, point.x])),
+        territory.points.map((ring) => ring.map((point) => toMapPoint(point))),
         {
-          color: territory.color,
-          fillColor: territory.fillColor,
-          fillOpacity: 0.28,
-          weight: 1.5,
+          color: territory.color || "#5f97da",
+          fillColor: territory.fillColor || "#8dc0ff",
+          fillOpacity: 0.56,
+          weight: 1.1,
         }
       );
 
@@ -97,15 +110,27 @@ function drawFeatures(clans) {
           `<strong>${clan.name}</strong><br>Глава: ${clan.leader || "Не указан"}<br>Участники: ${clan.members}<br>Чанки: ${clan.chunks}`
         );
 
-      polygon.on("mouseover", () => polygon.setStyle({ fillOpacity: 0.42, weight: 2.3 }));
-      polygon.on("mouseout", () => polygon.setStyle({ fillOpacity: 0.28, weight: 1.5 }));
+      polygon.on("mouseover", () => polygon.setStyle({ fillOpacity: 0.8, weight: 1.8 }));
+      polygon.on("mouseout", () => polygon.setStyle({ fillOpacity: 0.56, weight: 1.1 }));
       polygon.addTo(map);
       featureLayers.push(polygon);
+      drawnBounds.push(polygon.getBounds());
     });
   });
 
+  if (!clans.length) {
+    fitWorld();
+    return;
+  }
+
   if (clans.length === 1) {
     zoomToClan(clans[0]);
+    return;
+  }
+
+  const mergedBounds = mergeLeafletBounds(drawnBounds);
+  if (mergedBounds) {
+    map.fitBounds(mergedBounds, { padding: [36, 36], maxZoom: 4 });
   }
 }
 
@@ -132,11 +157,7 @@ function renderResults(clans) {
 }
 
 function zoomToClan(clan) {
-  const bounds = [
-    [clan.bounds.minZ, clan.bounds.minX],
-    [clan.bounds.maxZ, clan.bounds.maxX],
-  ];
-  map.fitBounds(bounds, { padding: [50, 50], maxZoom: 3 });
+  map.fitBounds(toClanBounds(clan.bounds), { padding: [50, 50], maxZoom: 5 });
 }
 
 function clearMapFeatures() {
@@ -148,9 +169,6 @@ function focusFromQuery(results) {
   const params = new URLSearchParams(window.location.search);
   const focusId = params.get("focus");
   if (!focusId) {
-    if (results.length === 1) {
-      zoomToClan(results[0]);
-    }
     return;
   }
 
@@ -201,9 +219,27 @@ function toggleFullscreen() {
 
 function worldToLeafletBounds(bounds) {
   return [
-    [bounds.minZ, bounds.minX],
-    [bounds.maxZ, bounds.maxX],
+    [bounds.minZ / WORLD_SCALE, bounds.minX / WORLD_SCALE],
+    [bounds.maxZ / WORLD_SCALE, bounds.maxX / WORLD_SCALE],
   ];
+}
+
+function toMapPoint(point) {
+  return [point.z / WORLD_SCALE, point.x / WORLD_SCALE];
+}
+
+function toClanBounds(bounds) {
+  return [
+    [bounds.minZ / WORLD_SCALE, bounds.minX / WORLD_SCALE],
+    [bounds.maxZ / WORLD_SCALE, bounds.maxX / WORLD_SCALE],
+  ];
+}
+
+function mergeLeafletBounds(boundsList) {
+  if (!boundsList.length) {
+    return null;
+  }
+  return boundsList.reduce((acc, bounds) => (acc ? acc.extend(bounds) : bounds), null);
 }
 
 async function fetchJson(url, options) {
@@ -215,4 +251,12 @@ async function fetchJson(url, options) {
     throw new Error(await response.text());
   }
   return response.json();
+}
+
+function debounce(fn, wait) {
+  let timer = null;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), wait);
+  };
 }
