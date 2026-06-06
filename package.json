@@ -1,0 +1,17 @@
+{
+  "name": "goykarta",
+  "version": "1.0.0",
+  "description": "GOYKARTA clan territory search on Node.js, Express and SQLite",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "sqlite3": "^5.1.7"
+  }
+}

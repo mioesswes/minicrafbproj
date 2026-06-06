@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ГОЙКАРТА</title>
+    <link rel="stylesheet" href="/public/styles.css" />
+  </head>
+  <body class="home-page">
+    <div class="page-bg"></div>
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+    <main class="shell">
+      <section class="hero glass-panel glass-hero">
+        <div class="glass-shine"></div>
+        <img class="hero-logo" src="/assets/llgo.webp" alt="ГОЙКАРТА" />
+        <p class="hero-subtitle">Найди свою территорию</p>
+
+        <div class="hero-actions">
+          <a class="liquid-button" id="mapButton" href="/map">
+            <span>КАРТА</span>
+          </a>
+          <a class="liquid-button secondary" id="telegramButton" href="#" target="_blank" rel="noreferrer">
+            <span>TELEGRAM</span>
+          </a>
+        </div>
+
+        <div class="stats-inline" id="statsInline">
+          <span>Всего кланов: ...</span>
+          <span>Всего территорий: ...</span>
+          <span>Последнее обновление карты: ...</span>
+        </div>
+      </section>
+
+      <section class="search-box glass-panel">
+        <div class="search-heading">
+          <div>
+            <p class="eyebrow">ПОИСК КЛАНА</p>
+            <h1>Территории кланов Minecraft</h1>
+          </div>
+          <button class="clear-button" id="clearSearch" type="button">×</button>
+        </div>
+
+        <div class="search-grid">
+          <label class="field field-wide">
+            <span>Название клана или [тег]</span>
+            <input id="queryInput" type="text" placeholder="Введите тег или название клана..." />
+          </label>
+          <label class="field">
+            <span>Ник главы</span>
+            <input id="leaderInput" type="text" placeholder="Например, NotchMaster" />
+          </label>
+        </div>
+
+        <div class="search-meta">
+          <span id="resultCount">Пока пусто. Начните вводить запрос.</span>
+          <a class="text-link" id="openMapLink" href="/map">Открыть карту</a>
+        </div>
+
+        <div class="results" id="results"></div>
+      </section>
+    </main>
+
+    <div class="modal-backdrop hidden" id="captchaModal">
+      <div class="modal-card glass-panel">
+        <div class="pulse-ring"></div>
+        <p class="eyebrow">ДОСТУП</p>
+        <h2>Для продолжения перейдите в Telegram</h2>
+        <p class="modal-copy">После нажатия доступ будет открыт и сохранится в cookie.</p>
+        <button class="liquid-button modal-button pulse" id="captchaButton" type="button">
+          <span>ПОДПИСАТЬСЯ</span>
+        </button>
+      </div>
+    </div>
+
+    <template id="cardTemplate">
+      <article class="result-card glass-tile">
+        <div class="result-main">
+          <div>
+            <p class="clan-label">Клан</p>
+            <h3 class="clan-name minecraft-text"></h3>
+            <p class="clan-leader"></p>
+          </div>
+          <div class="clan-badges">
+            <span class="badge members"></span>
+            <span class="badge chunks"></span>
+            <span class="badge territories"></span>
+          </div>
+        </div>
+        <div class="result-footer">
+          <div class="coords"></div>
+          <div class="result-actions">
+            <button class="glass-mini copy-button" type="button">СКОПИРОВАТЬ КООРДИНАТЫ</button>
+            <a class="glass-mini map-link" href="/map">ПОКАЗАТЬ НА КАРТЕ</a>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script src="/public/app.js" defer></script>
+  </body>
+</html>

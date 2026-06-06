@@ -1,0 +1,9 @@
+@font-face {
+	font-family: 'Minecraft Rus Regular';
+	src: url('../fonts/minecraft_rus_regular.eot'); /* IE 9 Compatibility Mode */
+	src: url('../fonts/minecraft_rus_regular.eot?#iefix') format('embedded-opentype'), /* IE < 9 */
+		url('../fonts/minecraft_rus_regular.woff2') format('woff2'), /* Super Modern Browsers */
+		url('../fonts/minecraft_rus_regular.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+		url('../fonts/minecraft_rus_regular.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('../fonts/minecraft_rus_regular.svg#minecraft_rus_regular') format('svg'); /* Chrome < 4, Legacy iOS */
+}

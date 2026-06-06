@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ГОЙКАРТА / Админка</title>
+    <link rel="stylesheet" href="/public/styles.css" />
+  </head>
+  <body class="admin-page">
+    <div class="page-bg"></div>
+    <main class="admin-shell">
+      <section class="admin-header glass-panel">
+        <div>
+          <p class="eyebrow">ADMINKQA</p>
+          <h1>Управление GOYKARTA</h1>
+        </div>
+        <a class="glass-mini" href="/">ОТКРЫТЬ САЙТ</a>
+      </section>
+
+      <section class="admin-grid">
+        <article class="glass-panel admin-card">
+          <h2>Настройки</h2>
+          <label class="toggle-row">
+            <span>КАПЧА ВКЛ/ВЫКЛ</span>
+            <input id="captchaToggle" type="checkbox" />
+          </label>
+          <div class="admin-meta" id="adminStats"></div>
+        </article>
+
+        <article class="glass-panel admin-card">
+          <h2>Загрузить актуальный marks.json</h2>
+          <input id="marksFile" type="file" accept=".json,application/json" />
+          <button class="liquid-button upload-button" id="uploadMarksButton" type="button">
+            <span>ЗАГРУЗИТЬ</span>
+          </button>
+          <p class="admin-help" id="uploadStatus">Файл будет сохранён в SQLite и сразу применён.</p>
+        </article>
+      </section>
+
+      <section class="glass-panel admin-card">
+        <div class="section-head">
+          <h2>Пользователи</h2>
+          <span class="table-hint">IP / количество запросов / последняя активность</span>
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>IP</th>
+                <th>Количество запросов</th>
+                <th>Последняя активность</th>
+              </tr>
+            </thead>
+            <tbody id="usersTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="glass-panel admin-card">
+        <div class="section-head">
+          <h2>Логи поиска</h2>
+          <span class="table-hint">IP / дата / запрос / результат</span>
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>IP</th>
+                <th>Дата</th>
+                <th>Запрос</th>
+                <th>Результат</th>
+              </tr>
+            </thead>
+            <tbody id="logsTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="/public/admin.js" defer></script>
+  </body>
+</html>

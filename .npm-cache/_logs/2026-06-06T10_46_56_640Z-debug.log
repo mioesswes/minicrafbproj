@@ -1,0 +1,61 @@
+0 info it worked if it ends with ok
+1 verbose cli [
+1 verbose cli   'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'express@4.19.2',
+1 verbose cli   'sqlite3@5.1.7'
+1 verbose cli ]
+2 info using npm@6.14.11
+3 info using node@v14.16.0
+4 verbose npm-session c1c0e7d896d4fa85
+5 silly install loadCurrentTree
+6 silly install readLocalPackageData
+7 silly fetchPackageMetaData error for express@4.19.2 request to https://registry.npmjs.org/express failed, reason: connect EACCES 104.16.9.34:443
+8 silly fetchPackageMetaData error for sqlite3@5.1.7 request to https://registry.npmjs.org/sqlite3 failed, reason: connect EACCES 104.16.9.34:443
+9 timing stage:rollbackFailedOptional Completed in 1ms
+10 timing stage:runTopLevelLifecycles Completed in 120ms
+11 verbose type system
+12 verbose stack FetchError: request to https://registry.npmjs.org/express failed, reason: connect EACCES 104.16.9.34:443
+12 verbose stack     at ClientRequest.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\node-fetch-npm\src\index.js:68:14)
+12 verbose stack     at ClientRequest.emit (events.js:315:20)
+12 verbose stack     at TLSSocket.socketErrorListener (_http_client.js:469:9)
+12 verbose stack     at TLSSocket.emit (events.js:315:20)
+12 verbose stack     at emitErrorNT (internal/streams/destroy.js:106:8)
+12 verbose stack     at emitErrorCloseNT (internal/streams/destroy.js:74:3)
+12 verbose stack     at processTicksAndRejections (internal/process/task_queues.js:80:21)
+13 verbose cwd C:\Users\79613\Desktop\goy
+14 verbose Windows_NT 10.0.19045
+15 verbose argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "express@4.19.2" "sqlite3@5.1.7"
+16 verbose node v14.16.0
+17 verbose npm  v6.14.11
+18 error code EACCES
+19 error errno EACCES
+20 error FetchError: request to https://registry.npmjs.org/express failed, reason: connect EACCES 104.16.9.34:443
+20 error     at ClientRequest.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\node-fetch-npm\src\index.js:68:14)
+20 error     at ClientRequest.emit (events.js:315:20)
+20 error     at TLSSocket.socketErrorListener (_http_client.js:469:9)
+20 error     at TLSSocket.emit (events.js:315:20)
+20 error     at emitErrorNT (internal/streams/destroy.js:106:8)
+20 error     at emitErrorCloseNT (internal/streams/destroy.js:74:3)
+20 error     at processTicksAndRejections (internal/process/task_queues.js:80:21)
+20 error  FetchError: request to https://registry.npmjs.org/express failed, reason: connect EACCES 104.16.9.34:443
+20 error     at ClientRequest.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\node-fetch-npm\src\index.js:68:14)
+20 error     at ClientRequest.emit (events.js:315:20)
+20 error     at TLSSocket.socketErrorListener (_http_client.js:469:9)
+20 error     at TLSSocket.emit (events.js:315:20)
+20 error     at emitErrorNT (internal/streams/destroy.js:106:8)
+20 error     at emitErrorCloseNT (internal/streams/destroy.js:74:3)
+20 error     at processTicksAndRejections (internal/process/task_queues.js:80:21) {
+20 error   type: 'system',
+20 error   errno: 'EACCES',
+20 error   code: 'EACCES'
+20 error }
+21 error The operation was rejected by your operating system.
+21 error It's possible that the file was already in use (by a text editor or antivirus),
+21 error or that you lack permissions to access it.
+21 error
+21 error If you believe this might be a permissions issue, please double-check the
+21 error permissions of the file and its containing directories, or try running
+21 error the command again as root/Administrator.
+22 verbose exit [ 1, true ]

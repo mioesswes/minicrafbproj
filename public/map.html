@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ГОЙКАРТА / Карта</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="/public/styles.css" />
+  </head>
+  <body class="map-page">
+    <div class="page-bg"></div>
+    <div class="map-layout">
+      <aside class="map-sidebar glass-panel">
+        <div class="sidebar-top">
+          <a class="glass-mini back-link" href="/">НА ГЛАВНУЮ</a>
+          <img class="sidebar-logo" src="/assets/llgo.webp" alt="ГОЙКАРТА" />
+        </div>
+
+        <div class="sidebar-search">
+          <label class="field">
+            <span>Название клана или [тег]</span>
+            <input id="mapQueryInput" type="text" placeholder="Например, [88] или BloodEmpire" />
+          </label>
+          <label class="field">
+            <span>Ник главы</span>
+            <input id="mapLeaderInput" type="text" placeholder="Например, Styopo4ka" />
+          </label>
+          <div class="sidebar-actions">
+            <button class="liquid-button" id="mapSearchButton" type="button"><span>ПОИСК</span></button>
+            <button class="glass-mini" id="fitWorldButton" type="button">ПОКАЗАТЬ МИР</button>
+          </div>
+        </div>
+
+        <div class="map-status" id="mapStatus">Загрузка карты...</div>
+        <div class="map-results" id="mapResults"></div>
+      </aside>
+
+      <section class="map-stage glass-panel">
+        <div class="map-toolbar">
+          <div class="map-toolbar-left">
+            <span class="map-pill">Мир: X/Z от -30000 до 30000</span>
+            <span class="map-pill" id="mapStatsPill">Кланов: ...</span>
+          </div>
+          <button class="glass-mini" id="fullscreenButton" type="button">FULLSCREEN</button>
+        </div>
+        <div class="map-grid-frame">
+          <div id="map"></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop hidden" id="mapCaptchaModal">
+      <div class="modal-card glass-panel">
+        <div class="pulse-ring"></div>
+        <p class="eyebrow">ДОСТУП</p>
+        <h2>Для продолжения перейдите в Telegram</h2>
+        <p class="modal-copy">Кнопка открывает Telegram и запоминает прохождение капчи.</p>
+        <button class="liquid-button modal-button pulse" id="mapCaptchaButton" type="button">
+          <span>ПОДПИСАТЬСЯ</span>
+        </button>
+      </div>
+    </div>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="/public/map.js" defer></script>
+  </body>
+</html>
